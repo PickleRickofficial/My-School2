@@ -1,0 +1,30 @@
+spring:
+  datasource:
+    type: com.zaxxer.hikari.HikariDataSource
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/database01?characterEncoding=utf-8&useSSL=false
+    username: 123
+    password: 123
+  #thymeleaf
+  thymeleaf:
+    cache: false
+
+
+
+
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher
+    view:
+      prefix: /templates
+      suffix: .html
+    static-path-pattern: /static/**
+  web:
+    resources:
+      static-locations: classpath:/static/**
+
+
+
+mybatis-plus:
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl

@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+<head>
+    <meta charset="UTF-8">
+    <title>首页</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/static/style.css}" />
+
+</head>
+<body>
+
+
+<div class="div01">
+    <!--enctype="application/json"可以手动改变表单的数据传输格式，默认是url查询字符串格式-->
+    <form id="loginForm" th:action="@{/system/login}" method="post" enctype="application/json">
+              <input type="hidden" name="userType" value="1">
+        用户名：<input type="text" name="userName" placeholder="用户名" autocomplete="username"><br>
+        密码：  <input type="password" name="password" placeholder="密码" autocomplete="current-password"><br>
+        验证码： <input type="text" name="verifyCode" placeholder="输入验证码">
+            <img class="img01" src="/system/getVerifyCode" alt="验证码"><br><!-- 显示验证码图像 -->
+        <button onclick="checkLogin()">提交</button>
+    </form>
+</div>
+
+
+<script>
+
+    function checkLogin() {
+        //表单数据,默认格式是：Content type 'application/x-www-form-urlencoded'
+        // let formData = new FormData(document.getElementById('loginForm'));
+        // 表单数据
+        let formData = {
+            userName: document.querySelector('input[name="userName"]').value,
+            password: document.querySelector('input[name="password"]').value,
+            verifyCode: document.querySelector('input[name="verifyCode"]').value,
+            userType: document.querySelector('input[name="userType"]').value
+        };
+        // 添加提交事件监听器
+        let formElement=document.getElementById("loginForm");
+        formElement.addEventListener("submit", function (event) {
+            event.preventDefault(); // 阻止默认表单提交行为
+        });
+        /*ajax方式，成功*/
+        // $.ajax({
+        //     type: 'POST',
+        //     url: '/system/login',
+        //     data: formData,
+        //     success: function (response) {
+        //         //登陆成功
+        //         if (response === '200') {
+        //             alert("登录成功");
+        //         } else {//失败
+        //             alert("登陆失败，请重新输入")
+        //         }
+        //     },
+        //        //错误
+        //     error: function (error) {
+        //        alert("请求失败，请重试")
+        //      }
+        // });
+        console.log(formData)
+        fetch('/system/login',{
+            headers:{
+                "Content-Type": "application/json", // 设置请求内容类型为 JSON
+                },
+            method: 'POST',
+            body: JSON.stringify(formData)//请求体，前端向后端传递json数据时，需要使用JSON.stringify()将json对象转化为json字符串。
+         })
+            .then(function (response) {
+                if(!response.ok){
+                    throw new Error("Network response was not ok");
+                }
+                return response.json();// 解析响应为 JSON 格式
+            })
+            .then(function (data) {//获取响应回来的数据
+                console.log(data);
+            })
+            .catch(function(error) {
+                // 处理错误
+                console.error("Fetch Error: ", error);
+            });
+    }
+</script>
+
+
+</body>
+</html>
